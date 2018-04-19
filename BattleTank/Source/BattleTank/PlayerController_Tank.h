@@ -4,13 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "Tank.h"
 #include "Engine/World.h"
 #include "PlayerController_Tank.generated.h"
 
-/**
- * 
- */
+class ATank;
+
 UCLASS()
 class BATTLETANK_API APlayerController_Tank : public APlayerController
 {
@@ -32,7 +30,7 @@ private:
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector &HitLocation) const;
 
 public:
-	ATank * GetControlledTank() const;
+	ATank* GetControlledTank() const;
 	
 	void BeginPlay() override;
 
