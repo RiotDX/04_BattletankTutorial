@@ -1,21 +1,27 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAimingComponent.h"
+#include "TankTurret.h"
 #include "TankBarrel.h"
-
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	/// myTankName = GetOwner()->GetName();
 }
 
 void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet) {
+	if (!BarrelToSet) { return; }
 	barrel = BarrelToSet;
+}
+
+void UTankAimingComponent::SetTurretReference(UTankTurret* TurretComponent) {
+	if (!TurretComponent) { return; }
+	turret = TurretComponent;
 }
 
 void UTankAimingComponent::AimAt(FVector WorldTarget, float velocity) {
@@ -46,9 +52,11 @@ void UTankAimingComponent::AimAt(FVector WorldTarget, float velocity) {
 }
 
 void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
+
 	auto BarrelRotator = barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 
-	barrel->Elevate(5);
+	barrel->Elevate(DeltaRotator.Pitch);
+	turret->Rotate(DeltaRotator.Yaw);
 }
