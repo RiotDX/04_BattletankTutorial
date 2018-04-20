@@ -10,11 +10,11 @@ void AAIController_Tank::BeginPlay()
 
 	ControlledTank = GetControlledTank();
 	
-	if(ControlledTank)
-		UE_LOG(LogTemp, Warning, TEXT("AI Controller possessing tank %s."), *ControlledTank->GetName())
-	else {
+	if(!ControlledTank)
+		/// UE_LOG(LogTemp, Warning, TEXT("AI Controller possessing tank %s."), *ControlledTank->GetName())
+	///else {
 		Destroy();
-	}
+	///}
 
 	PlayerTank = GetPlayerTank();
 

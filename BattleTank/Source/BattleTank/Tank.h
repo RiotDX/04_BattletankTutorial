@@ -9,6 +9,7 @@
 
 class UTankBarrel;
 class UTankTurret;
+class AProjectile;
 class UTankAimingComponent;
 
 UCLASS()
@@ -24,6 +25,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
 		void SetTurretReference(UTankTurret* TurretComponent);
+
+	UFUNCTION(BlueprintCallable, Category = Custom)
+		void Fire();
 
 protected:
 	UTankAimingComponent * TankAimingComponent = nullptr;
@@ -41,4 +45,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = Firing)
 	float LaunchVelocity = 5000.;
 	
+	UPROPERTY(EditAnywhere, Category = Firing)
+		TSubclassOf<AProjectile> ProjectileBlueprint;
+
+	UTankBarrel* barrel = nullptr;
 };
