@@ -2,9 +2,11 @@
 
 #include "Tank.h"
 #include "TankAimingComponent.h"
+#include "TankMovementComponent.h"
 #include "TankTurret.h"
 #include "TankBarrel.h"
 #include "Projectile.h"
+#include "Engine/World.h"
 
 // Sets default values
 ATank::ATank()
@@ -28,7 +30,10 @@ void ATank::SetTurretReference(UTankTurret* TurretComponent) {
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if(!ProjectileBlueprint) {
+		UE_LOG(LogTemp, Error, TEXT("Error, projectile blueprint variable not assigned"))
+	}
 }
 
 // Called to bind functionality to input
@@ -45,14 +50,16 @@ void ATank::AimAt(FVector HitLocation) {
 }
 
 void ATank::Fire() {
-	UE_LOG(LogTemp, Warning, TEXT("Kaboom!"))
+	if (!ProjectileBlueprint) { return; }
 
-	if (!barrel) { return; }
+	bool isReloaded = (GetWorld()->TimeSeconds - LastFireTime) > ReloadTimeSeconds;
+	if (barrel && isReloaded){
+		auto projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint,
+			barrel->GetSocketLocation(FName("firingPoint")),
+			barrel->GetSocketRotation(FName("firingPoint")));
 
-	auto projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, 
-		barrel->GetSocketLocation(FName("firingPoint")), 
-		barrel->GetSocketRotation(FName("firingPoint")));
-
-	projectile->LaunchProjectile(LaunchVelocity);
+		projectile->LaunchProjectile(LaunchVelocity);
+		LastFireTime = GetWorld()->TimeSeconds;
+	}
 }
 

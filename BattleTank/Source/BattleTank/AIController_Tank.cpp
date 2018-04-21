@@ -8,15 +8,12 @@ void AAIController_Tank::BeginPlay()
 
 	PrimaryActorTick.bCanEverTick = true;
 
-	ControlledTank = GetControlledTank();
+	ControlledTank = Cast<ATank>(GetPawn());
 	
 	if(!ControlledTank)
-		/// UE_LOG(LogTemp, Warning, TEXT("AI Controller possessing tank %s."), *ControlledTank->GetName())
-	///else {
 		Destroy();
-	///}
 
-	PlayerTank = GetPlayerTank();
+	PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
 	if(!PlayerTank)
 		UE_LOG(LogTemp, Error, TEXT("No player tank found."))
@@ -26,17 +23,21 @@ void AAIController_Tank::Tick(float DeltaTime) {
 
 	Super::Tick(DeltaTime);
 
-	if(GetPlayerTank()) {
-		GetControlledTank()->AimAt(GetPlayerTank()->GetActorLocation());
+	if (!ControlledTank) {
+		Destroy();
 	}
+	
+	if(!PlayerTank) PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	
+	if(PlayerTank) {
+		MoveToActor(PlayerTank, AcceptanceRadius);
 
-}
+		ControlledTank->AimAt(PlayerTank->GetActorLocation());
 
-ATank * AAIController_Tank::GetPlayerTank() const {
-	return Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
-}
+		ControlledTank->Fire();
+	} 
+	
+	return;
 
-ATank* AAIController_Tank::GetControlledTank() const {
-	return Cast<ATank>(GetPawn());
 }
 

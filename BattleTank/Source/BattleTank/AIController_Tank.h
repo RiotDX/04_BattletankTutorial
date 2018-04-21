@@ -21,16 +21,15 @@ private:
 
 	ATank* PlayerTank;
 	
-	ATank* GetControlledTank() const;
-	
 	ATank* ControlledTank;
 	
 	void BeginPlay() override;
 
-	ATank* GetPlayerTank() const;
-
 	virtual void Tick(float DeltaTime) override;
 
 public:
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	float AcceptanceRadius = 3000;
 
 };
