@@ -1,8 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Tank.h"
-#include "TankAimingComponent.h"
-#include "Projectile.h"
 #include "Engine/World.h"
 
 // Sets default values
@@ -17,9 +15,6 @@ void ATank::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(!ProjectileBlueprint) {
-		UE_LOG(LogTemp, Error, TEXT("Error, projectile blueprint variable not assigned"))
-	}
 }
 
 // Called to bind functionality to input
@@ -27,28 +22,5 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-}
-
-void ATank::AimAt(FVector HitLocation) {
-	
-	///TankAimingComponent->AimAt(HitLocation, LaunchVelocity);
-
-}
-
-void ATank::Fire() {
-	if (!ensure(ProjectileBlueprint)) { return; }
-/*
-	bool isReloaded = (GetWorld()->TimeSeconds - LastFireTime) > ReloadTimeSeconds;
-	
-	if(!ensure(barrel) { return };
-
-	if (isReloaded){
-		auto projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint,
-			barrel->GetSocketLocation(FName("firingPoint")),
-			barrel->GetSocketRotation(FName("firingPoint")));
-
-		projectile->LaunchProjectile(LaunchVelocity);
-		LastFireTime = GetWorld()->TimeSeconds;
-	}*/
 }
 

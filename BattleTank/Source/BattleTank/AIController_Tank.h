@@ -8,6 +8,7 @@
 #include "Engine/World.h"
 #include "AIController_Tank.generated.h"
 
+class UTankAimingComponent;
 /**
  * 
  */
@@ -19,8 +20,8 @@ class BATTLETANK_API AAIController_Tank : public AAIController
 private:
 
 	ATank* PlayerTank;
-	
-	ATank* ControlledTank;
+
+	UTankAimingComponent* AimingComponent;
 	
 	void BeginPlay() override;
 

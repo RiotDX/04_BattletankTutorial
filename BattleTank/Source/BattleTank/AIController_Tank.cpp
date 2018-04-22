@@ -1,17 +1,21 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AIController_Tank.h"
+#include "TankAimingComponent.h"
 
 void AAIController_Tank::BeginPlay()
 {
 	Super::BeginPlay();
 
 	PrimaryActorTick.bCanEverTick = true;
-
-	ControlledTank = Cast<ATank>(GetPawn());
 	
-	if(!ControlledTank)
+	if(!GetPawn()) {
 		Destroy();
+		return;
+	}
+
+	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
 
 	PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
@@ -23,7 +27,7 @@ void AAIController_Tank::Tick(float DeltaTime) {
 
 	Super::Tick(DeltaTime);
 
-	if (!ensure(ControlledTank)) {
+	if (!ensure(GetPawn())) {
 		Destroy();
 	}
 	
@@ -32,9 +36,10 @@ void AAIController_Tank::Tick(float DeltaTime) {
 	if(PlayerTank) {
 		MoveToActor(PlayerTank, AcceptanceRadius);
 
-		ControlledTank->AimAt(PlayerTank->GetActorLocation());
+		if (!ensure(AimingComponent)) { return; }
+		AimingComponent->AimAt(PlayerTank->GetActorLocation());
 
-		ControlledTank->Fire();
+		AimingComponent->Fire();
 	} 
 	
 	return;

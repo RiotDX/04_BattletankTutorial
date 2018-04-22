@@ -3,6 +3,7 @@
 #include "TankAimingComponent.h"
 #include "TankTurret.h"
 #include "TankBarrel.h"
+#include "Projectile.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -11,7 +12,9 @@ UTankAimingComponent::UTankAimingComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
-	/// myTankName = GetOwner()->GetName();
+	if (!ProjectileBlueprint) {
+		UE_LOG(LogTemp, Error, TEXT("Error, projectile blueprint variable not assigned"))
+	}
 }
 
 void UTankAimingComponent::Initialise(UTankBarrel* Barrel, UTankTurret* Turret) {
@@ -20,9 +23,10 @@ void UTankAimingComponent::Initialise(UTankBarrel* Barrel, UTankTurret* Turret) 
 
 	if (!Barrel) { return; }
 	barrel = Barrel;
+
 }
 
-void UTankAimingComponent::AimAt(FVector WorldTarget, float velocity) {
+void UTankAimingComponent::AimAt(FVector WorldTarget) {
 
 	if (!barrel) { return; }
 
@@ -34,7 +38,7 @@ void UTankAimingComponent::AimAt(FVector WorldTarget, float velocity) {
 		outLaunchVelocity,
 		barrel->GetSocketLocation(FName("firingPoint")),
 		WorldTarget,
-		velocity,
+		launchSpeed,
 		false,
 		0,
 		0,
@@ -50,7 +54,7 @@ void UTankAimingComponent::AimAt(FVector WorldTarget, float velocity) {
 }
 
 void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
-	if (!barrel || !turret) { return; }
+	if (!ensure(barrel && turret)) { return; }
 
 	auto BarrelRotator = barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
@@ -58,4 +62,18 @@ void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
 
 	barrel->Elevate(DeltaRotator.Pitch);
 	turret->Rotate(DeltaRotator.Yaw);
+}
+
+void UTankAimingComponent::Fire() {
+	if (!ensure(ProjectileBlueprint && barrel)) { return; }
+	bool isReloaded = (GetWorld()->TimeSeconds - LastFireTime) > ReloadTimeSeconds;
+
+	if (isReloaded){
+	auto projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint,
+	barrel->GetSocketLocation(FName("firingPoint")),
+	barrel->GetSocketRotation(FName("firingPoint")));
+
+	projectile->LaunchProjectile(launchSpeed);
+	LastFireTime = GetWorld()->TimeSeconds;
+	}
 }
