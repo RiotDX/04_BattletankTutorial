@@ -41,9 +41,7 @@ protected:
 public:	
 
 	void AimAt(FVector WorldTarget, float velocity);
-		
-	void SetBarrelReference(UTankBarrel* BarrelToSet);
-
-	void SetTurretReference(UTankTurret* TurretComponent);
 	
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+		void Initialise(UTankBarrel* Barrel, UTankTurret* Turret);
 };

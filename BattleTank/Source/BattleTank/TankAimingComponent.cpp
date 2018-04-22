@@ -14,14 +14,12 @@ UTankAimingComponent::UTankAimingComponent()
 	/// myTankName = GetOwner()->GetName();
 }
 
-void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet) {
-	if (!BarrelToSet) { return; }
-	barrel = BarrelToSet;
-}
+void UTankAimingComponent::Initialise(UTankBarrel* Barrel, UTankTurret* Turret) {
+	if (!Turret) { return; }
+	turret = Turret;
 
-void UTankAimingComponent::SetTurretReference(UTankTurret* TurretComponent) {
-	if (!TurretComponent) { return; }
-	turret = TurretComponent;
+	if (!Barrel) { return; }
+	barrel = Barrel;
 }
 
 void UTankAimingComponent::AimAt(FVector WorldTarget, float velocity) {
@@ -52,6 +50,7 @@ void UTankAimingComponent::AimAt(FVector WorldTarget, float velocity) {
 }
 
 void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
+	if (!barrel || !turret) { return; }
 
 	auto BarrelRotator = barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();

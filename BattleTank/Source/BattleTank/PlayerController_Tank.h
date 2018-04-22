@@ -8,6 +8,7 @@
 #include "PlayerController_Tank.generated.h"
 
 class ATank;
+class UTankAimingComponent;
 
 UCLASS()
 class BATTLETANK_API APlayerController_Tank : public APlayerController
@@ -32,6 +33,9 @@ private:
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 		ATank* GetControlledTank() const;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
+		void FoundAimingComponent(UTankAimingComponent* AimingCompRef);
 
 public:
 	

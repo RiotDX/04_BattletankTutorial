@@ -4,7 +4,7 @@
 #include "TankTrack.h"
 
 void UTankMovementComponent::Initialise(UTankTrack* leftTrackIn, UTankTrack* rightTrackIn) {
-	if (!leftTrackIn || !rightTrackIn) {
+	if (!ensure(leftTrackIn && rightTrackIn)) {
 		UE_LOG(LogTemp, Error, TEXT("Initialise Tank Movement failed due to missing inputs."))
 			return;
 	}
@@ -13,14 +13,14 @@ void UTankMovementComponent::Initialise(UTankTrack* leftTrackIn, UTankTrack* rig
 }
 
 void UTankMovementComponent::IntendMoveForward(float Throw) {
-	if (!LeftTrack || !RightTrack) { return; }
+	if (!ensure(LeftTrack && RightTrack)) { return; }
 
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(Throw);
 }
 
 void UTankMovementComponent::IntendTurnRight(float Throw) {
-	if (!LeftTrack || !RightTrack) { return; }
+	if (!ensure(LeftTrack && RightTrack)) { return; }
 
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(-Throw);

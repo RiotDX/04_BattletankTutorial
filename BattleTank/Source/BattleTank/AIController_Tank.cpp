@@ -15,7 +15,7 @@ void AAIController_Tank::BeginPlay()
 
 	PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
-	if(!PlayerTank)
+	if(!ensure(PlayerTank))
 		UE_LOG(LogTemp, Error, TEXT("No player tank found."))
 }
 
@@ -23,7 +23,7 @@ void AAIController_Tank::Tick(float DeltaTime) {
 
 	Super::Tick(DeltaTime);
 
-	if (!ControlledTank) {
+	if (!ensure(ControlledTank)) {
 		Destroy();
 	}
 	

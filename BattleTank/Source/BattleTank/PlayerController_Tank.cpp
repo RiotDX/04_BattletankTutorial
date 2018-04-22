@@ -2,6 +2,7 @@
 
 #include "PlayerController_Tank.h"
 #include "Tank.h"
+#include "TankAimingComponent.h"
 
 ATank* APlayerController_Tank::GetControlledTank() const {
 	return Cast<ATank>(GetPawn());
@@ -10,6 +11,13 @@ ATank* APlayerController_Tank::GetControlledTank() const {
 void APlayerController_Tank::BeginPlay()
 {
 	Super::BeginPlay();
+
+	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
+	if (ensure(AimingComponent)) {
+		FoundAimingComponent(AimingComponent);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("PlayerController Aiming Component not found."))
+	}
 
 }
 
@@ -21,7 +29,7 @@ void APlayerController_Tank::Tick(float deltaTime)
 }
 
 void APlayerController_Tank::AimTowardCrosshair() {
-	if (!GetControlledTank()) { return; }
+	if (!ensure(GetControlledTank())) { return; }
 
 	FVector HitLocation;
 	if(GetSightRayHitLocation(HitLocation)) {
