@@ -11,7 +11,7 @@
 
 // Aim state enum
 UENUM(BlueprintType)
-enum class EFiringState: uint8{ Reloading, Aiming, LockedOn };
+enum class EFiringState: uint8{ Reloading, Aiming, LockedOn, OutOfAmmo };
 
 // Holds parameters for barrel properties
 class UTankBarrel;  /// I'm a Forward Declaration!
@@ -43,6 +43,8 @@ private:
 
 	UTankTurret* turret = nullptr;
 
+	int ammoValue = 5;
+
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 		EFiringState aimState = EFiringState::Reloading;
@@ -65,4 +67,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
 		float ReloadTimeSeconds = 3;
+
+	UFUNCTION(BlueprintPure, Category = Firing)
+		EFiringState GetFiringState() const;
+
+	UFUNCTION(BlueprintPure, Category = Firing)
+		int GetAmmunitionCount() const;
+
 };

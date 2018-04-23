@@ -27,9 +27,9 @@ private:
 
 	virtual void Tick(float DeltaTime) override;
 
-public:
+protected:
 
-	UPROPERTY(EditAnywhere, Category = Movement)
-	float AcceptanceRadius = 3000;
+	UPROPERTY(EditDefaultsOnly, Category = Movement)
+		float AcceptanceRadius = 4000;
 
 };

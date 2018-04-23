@@ -39,6 +39,7 @@ void AAIController_Tank::Tick(float DeltaTime) {
 		if (!ensure(AimingComponent)) { return; }
 		AimingComponent->AimAt(PlayerTank->GetActorLocation());
 
+		if(AimingComponent->GetFiringState() == EFiringState::LockedOn)
 		AimingComponent->Fire();
 	} 
 	
