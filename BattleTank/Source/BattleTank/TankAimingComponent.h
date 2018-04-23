@@ -27,13 +27,21 @@ private:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 
-	UTankBarrel* barrel = nullptr;
+	void BeginPlay() override;
 
-	UTankTurret* turret = nullptr;
+	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void MoveBarrel(FVector AimDirection);
 
+	bool IsBarrelMoving();
+
 	double LastFireTime = 0;
+
+	FVector aimDirection = FVector(0);
+
+	UTankBarrel* barrel = nullptr;
+
+	UTankTurret* turret = nullptr;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")

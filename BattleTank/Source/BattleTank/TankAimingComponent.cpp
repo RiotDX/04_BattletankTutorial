@@ -10,10 +10,25 @@ UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
+}
+
+void UTankAimingComponent::BeginPlay() {
+	
+	Super::BeginPlay();
 
 	if (!ProjectileBlueprint) {
 		UE_LOG(LogTemp, Error, TEXT("Error, projectile blueprint variable not assigned"))
+	}
+}
+
+void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
+	if((GetWorld()->TimeSeconds - LastFireTime) < ReloadTimeSeconds) {
+		aimState = EFiringState::Reloading;
+	} else if (IsBarrelMoving()) {
+		aimState = EFiringState::Aiming;
+	} else {
+		aimState = EFiringState::LockedOn;
 	}
 }
 
@@ -46,7 +61,7 @@ void UTankAimingComponent::AimAt(FVector WorldTarget) {
 	);
 
 	if(bHaveAimSolution) {
-		auto aimDirection = outLaunchVelocity.GetSafeNormal();
+		aimDirection = outLaunchVelocity.GetSafeNormal();
 
 		MoveBarrel(aimDirection);
 	}
@@ -65,15 +80,18 @@ void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
 }
 
 void UTankAimingComponent::Fire() {
-	if (!ensure(ProjectileBlueprint && barrel)) { return; }
-	bool isReloaded = (GetWorld()->TimeSeconds - LastFireTime) > ReloadTimeSeconds;
+	if (aimState != EFiringState::Reloading) {
+		if (!ensure(ProjectileBlueprint && barrel)) { return; }
+		auto projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint,
+		barrel->GetSocketLocation(FName("firingPoint")),
+		barrel->GetSocketRotation(FName("firingPoint")));
 
-	if (isReloaded){
-	auto projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint,
-	barrel->GetSocketLocation(FName("firingPoint")),
-	barrel->GetSocketRotation(FName("firingPoint")));
-
-	projectile->LaunchProjectile(launchSpeed);
-	LastFireTime = GetWorld()->TimeSeconds;
+		projectile->LaunchProjectile(launchSpeed);
+		LastFireTime = GetWorld()->TimeSeconds;
 	}
+}
+
+bool UTankAimingComponent::IsBarrelMoving() {
+	if (!ensure(barrel)) { return false; }
+	return !aimDirection.Equals(barrel->GetForwardVector(), 0.1);
 }
