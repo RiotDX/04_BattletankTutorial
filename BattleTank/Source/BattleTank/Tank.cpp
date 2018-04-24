@@ -15,6 +15,7 @@ void ATank::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CurrentHealth = MaxHealth;
 }
 
 // Called to bind functionality to input
@@ -23,4 +24,19 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
+float ATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser) {
+	float DamageToApply = FMath::Clamp<int32>(FPlatformMath::RoundToInt(DamageAmount), 0, CurrentHealth);
+	CurrentHealth -= DamageToApply;
+
+	if(CurrentHealth <= 0) {
+		OnDeath.Broadcast();
+	}
+
+	return DamageToApply;
+}
+
+float ATank::GetHealthPercent() const { return ((float)CurrentHealth / (float)MaxHealth); }
+
 

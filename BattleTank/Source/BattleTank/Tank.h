@@ -9,6 +9,9 @@
 
 class AProjectile;
 
+/// Declares a new delegate type called FMyDelegate
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMyDelegate);
+
 UCLASS()
 class BATTLETANK_API ATank : public APawn
 {
@@ -25,4 +28,21 @@ private:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
+		AController* EventInstigator, AActor* DamageCauser) override;
+
+	UPROPERTY(VisibleAnywhere, Category = "Statistics")
+		int32 CurrentHealth = 100;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Statistics")
+		int32 MaxHealth = 100;
+
+public:
+
+	// Returns current health as a percentage (0-1)
+	UFUNCTION(BlueprintPure, Category = "CustomStatistics")
+		float GetHealthPercent() const;
+
+	// Declare a new delegate variable of type FMyDelegate for other classes to subscribe to.
+	FMyDelegate OnDeath;
 };

@@ -2,6 +2,7 @@
 
 #include "PlayerController_Tank.h"
 #include "TankAimingComponent.h"
+#include "Tank.h"
 
 void APlayerController_Tank::BeginPlay()
 {
@@ -15,6 +16,16 @@ void APlayerController_Tank::BeginPlay()
 	}
 
 }
+
+void APlayerController_Tank::SetPawn(APawn* InPawn) {
+	Super::SetPawn(InPawn);
+	if (!InPawn) { return; }
+	
+	auto PossessedTank = Cast<ATank>(InPawn);
+	if (!ensure(PossessedTank)) { return; }
+	PossessedTank->OnDeath.AddUniqueDynamic(this, &APlayerController_Tank::OnTankDeath);
+}
+
 
 void APlayerController_Tank::Tick(float deltaTime)
 {
@@ -68,5 +79,9 @@ bool APlayerController_Tank::GetLookVectorHitLocation(FVector LookDirection, FVe
 
 	HitLocation = FVector(0);
 	return false;
+}
+
+void APlayerController_Tank::OnTankDeath() {
+		StartSpectatingOnly();
 }
 

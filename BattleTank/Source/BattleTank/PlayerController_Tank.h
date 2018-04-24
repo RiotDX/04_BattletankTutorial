@@ -29,8 +29,13 @@ private:
 	bool GetSightRayHitLocation(FVector& OutHitLocation) const;
 	bool GetLookDirection(FVector2D ScreenLocation, FVector &LookDirection) const;
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector &HitLocation) const;
+	
+	UFUNCTION()
+		void OnTankDeath();
 
 	UTankAimingComponent* AimingComponent = nullptr;
+
+	virtual void SetPawn(APawn* InPawn) override;
 
 protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")

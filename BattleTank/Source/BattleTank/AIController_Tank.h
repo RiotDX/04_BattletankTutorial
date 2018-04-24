@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "Tank.h"
 #include "Engine/World.h"
 #include "AIController_Tank.generated.h"
 
 class UTankAimingComponent;
+class ATank;
 /**
  * 
  */
@@ -27,9 +27,14 @@ private:
 
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void SetPawn(APawn* InPawn) override;
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Movement)
 		float AcceptanceRadius = 4000;
 
+public:
+	UFUNCTION()
+		void OnTankDeath();
 };
