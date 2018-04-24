@@ -35,7 +35,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 }
 
 EFiringState UTankAimingComponent::GetFiringState() const { return aimState; }
-int UTankAimingComponent::GetAmmunitionCount() const { return ammoValue; }
+int32 UTankAimingComponent::GetAmmunitionCount() const { return ammoValue; }
 
 void UTankAimingComponent::Initialise(UTankBarrel* Barrel, UTankTurret* Turret) {
 	if (!Turret) { return; }

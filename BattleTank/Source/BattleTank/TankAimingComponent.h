@@ -43,8 +43,6 @@ private:
 
 	UTankTurret* turret = nullptr;
 
-	int ammoValue = 5;
-
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 		EFiringState aimState = EFiringState::Reloading;
@@ -72,6 +70,9 @@ public:
 		EFiringState GetFiringState() const;
 
 	UFUNCTION(BlueprintPure, Category = Firing)
-		int GetAmmunitionCount() const;
+		int32 GetAmmunitionCount() const;
+
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
+		int32 ammoValue = 5;
 
 };
